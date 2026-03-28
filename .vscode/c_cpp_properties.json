@@ -1,0 +1,60 @@
+{
+    "env": {
+        "WATCOM": "/opt/watcom"
+    },
+    "configurations": [
+        {
+            "name": "Watcom DOS",
+            "includePath": [
+                "${workspaceFolder}/include/**",
+                "${WATCOM}/h/**"
+            ],
+            // CMake Tools provides the Watcom built-in macros (auto-discovered
+            // via -pm in CMakeLists.txt) based on the active preset. Switching
+            // between dos16-* and dos32-* presets automatically updates
+            // IntelliSense with the correct architecture/target macros.
+            "configurationProvider": "ms-vscode.cmake-tools",
+            // Merge our manual defines on top of what CMake Tools reports,
+            // so both the auto-discovered macros and the shims take effect.
+            "mergeConfigurations": true,
+            // IntelliSense-only shims for Watcom constructs that the MSVC
+            // IntelliSense engine cannot parse. These must NOT be passed to
+            // the real compiler:
+            "defines": [
+                // Watcom pragma keywords, remapped to MSVC's push/pop so
+                // #pragma pack(__push,N) parses correctly
+                "__push=push",
+                "__pop=pop",
+                // Resolve to __declspec(__watcall) in _comdef.h;
+                // emptying them would break calling conventions at link time,
+                // so they are IntelliSense-only. Safe because _comdef.h
+                // guards each with #ifndef.
+                "_WCRTLINK=",
+                "_WCIRTLINK=",
+                "_WCRTDATA=",
+                "_WPRTLINK=",
+                "_WMRTLINK=",
+                // Watcom compiler keywords that IntelliSense doesn't
+                // understand. _comdef.h maps _WCNEAR->__near, _WCFAR->__far
+                // etc. throughout the headers.
+                "__near=",
+                "__far=",
+                "__huge=",
+                "__interrupt=",
+                "__fortran=",
+                "__watcall=",
+                "__loadds=",
+                "__saveregs=",
+                "__export=",
+                "__far16="
+            ],
+            "cStandard": "c99",
+            "cppStandard": "c++98",
+            "intelliSenseMode": "msvc-x86",
+            // Empty string disables built-in compiler querying (IntelliSense
+            // cannot interrogate Watcom for its built-in defines/includes).
+            "compilerPath": ""
+        }
+    ],
+    "version": 4
+}
